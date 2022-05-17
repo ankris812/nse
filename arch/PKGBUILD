@@ -1,0 +1,33 @@
+# @uthCr33p
+
+pkgname='nmap-nse-extras-git'
+pkgver=20180319
+pkgrel=1
+pkgdesc='Extra 3rd-party Nmap scripts.'
+arch=('any')
+url='https://github.com/aerissecure/nse'
+license=('custom:unknown')
+depends=('nmap>7.0', 'phantomjs')
+makedepends=('git')
+sha256sums=('SKIP')
+source=(git+https://github.com/aerissecure/nse)
+_reponame="nse"
+
+install=nmap-nse-extras-git.install
+
+pkgver() {
+	cd $_reponame
+	printf "r%s.%s"  "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+	cd $_reponame
+	msg 'Installing NSE scripts'
+	# create dir
+	install -dm 755 "$pkgdir/usr/share/nmap/scripts"
+	install -m 644 *.nse "$pkgdir/usr/share/nmap/scripts"
+
+	msg 'Installing script data'
+	install -dm 755 "$pkgdir/usr/share/nmap/nselib/data"
+	install -m 644 data/* "$pkgdir/usr/share/nmap/nselib/data"
+}
